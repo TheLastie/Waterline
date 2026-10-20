@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://thelastie.github.io/waterline-lab/sitemap.xml
+Sitemap: https://thelastie.github.io/Waterline/sitemap.xml
