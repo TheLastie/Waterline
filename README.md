@@ -1,5 +1,7 @@
 # Waterline
 
+## English
+
 **A scenario workshop for testing choices in a fictional coastal district.** Waterline lets a class, design team, or community group see how rainfall, tide, terrain, and local interventions can change exposure across one generated neighborhood.
 
 The model is intentionally comparative: save a completed baseline, reset the same map, place measures such as rain gardens or barriers, run again, and export a short Markdown brief with both outcomes and their conditions.
