@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#e8eee9">
+  <meta name="description" content="Waterline — интерактивная лаборатория прибрежной устойчивости. Проверяйте, как рельеф, прилив, ливень и городская инфраструктура влияют на затопления и безопасные маршруты.">
+  <meta name="geo.region" content="RU-BA">
+  <meta name="geo.placename" content="Уфа, Республика Башкортостан">
+  <link rel="canonical" href="https://thelastie.github.io/waterline-lab/">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Waterline — лаборатория прибрежной устойчивости">
+  <meta property="og:description" content="Моделируйте ливни, приливы, затопления, защитные меры и эвакуацию в интерактивном городе.">
+  <meta property="og:url" content="https://thelastie.github.io/waterline-lab/">
+  <meta property="og:locale" content="ru_RU">
+  <meta property="og:image" content="https://thelastie.github.io/waterline-lab/og-waterline.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+    {"@context":"https://schema.org","@type":"WebApplication","name":"Waterline — Coastal Resilience Lab","applicationCategory":"EducationalApplication","operatingSystem":"Any","inLanguage":["ru","en"],"description":"An interactive coastal city simulator for exploring stormwater, tides, flood defenses and evacuation planning.","areaServed":"Worldwide","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  </script>
+  <title>Waterline — лаборатория прибрежной устойчивости</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='18' fill='%23172932'/%3E%3Cpath d='M8 38c8-10 16 10 24 0s16 10 24 0M8 48c8-10 16 10 24 0s16 10 24 0' fill='none' stroke='%239bd9c2' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="styles.css?v=1">
+  <script src="app.js?v=2" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="wordmark" href="#top" aria-label="Waterline — к началу"><span class="brand-glyph" aria-hidden="true">≈</span><span>waterline</span><small>COASTAL RESILIENCE LAB</small></a>
+    <div class="top-status"><span class="status-pulse" aria-hidden="true"></span><span>МОДЕЛЬ В РЕАЛЬНОМ ВРЕМЕНИ</span><span class="top-divider"></span><span>СЦЕНАРИЙ <b data-seed>0042</b></span></div>
+    <button class="icon-button help-button" id="open-guide" type="button" aria-label="Как пользоваться симулятором" title="Как пользоваться симулятором">i</button>
+  </header>
+
+  <main id="top">
+    <section class="intro page-grid" aria-labelledby="page-title">
+      <div class="intro-copy">
+        <p class="eyebrow"><span>ПРИБРЕЖНЫЕ СИСТЕМЫ</span><i></i><span>ПОЛЕВАЯ ЛАБОРАТОРИЯ / 01</span></p>
+        <h1 id="page-title">Город между<br>водой и <em>решением.</em></h1>
+        <p class="intro-lede">Каждый дождь находит слабое место. Меняйте условия и инфраструктуру — наблюдайте, как меняется риск для кварталов и людей.</p>
+      </div>
+      <aside class="tide-note" aria-label="Суть модели">
+        <span class="note-index">ПРИНЦИП МОДЕЛИ</span>
+        <p>Вода следует уклону.<br>Уязвимость — по карте.<br><strong>Защита меняет оба.</strong></p>
+        <div class="tide-spark" aria-hidden="true"><svg viewBox="0 0 160 44"><path d="M1 28c14 0 14-14 28-14s14 18 28 18 14-21 28-21 14 13 28 13 14-12 28-12 14 8 19 8"/></svg></div>
+      </aside>
+    </section>
+
+    <section class="workspace page-grid" aria-label="Симулятор прибрежного города">
+      <div class="map-column">
+        <div class="map-heading">
+          <div><p class="eyebrow">01 / ТЕРРИТОРИЯ</p><h2>Нижний берег <span data-map-label>· сетка 64 × 40</span></h2></div>
+          <label class="select-wrap"><span class="sr-only">Масштаб карты</span><select id="map-size" aria-label="Размер карты"><option value="compact">Малый участок</option><option value="district" selected>Городской район</option><option value="regional">Прибрежная зона</option></select><span aria-hidden="true">⌄</span></label>
+        </div>
+        <div class="map-frame" id="map-frame">
+          <canvas id="city-map" aria-label="Карта высот, зданий, дорог и текущего затопления. Нажмите, чтобы разместить выбранную защиту." role="img"></canvas>
+          <div class="map-coordinate" aria-hidden="true"><span>СЕКТОР 03</span><span>УСЛОВНЫЙ БЕРЕГ · НЕ В МАСШТАБЕ</span></div>
+          <div class="map-scale" aria-hidden="true"><i></i><span>500 м</span></div>
+          <div class="north-marker" aria-hidden="true">N <b>↑</b></div>
+          <div class="map-loading" id="map-hint" aria-live="polite">Карта готова · выберите слой</div>
+        </div>
+        <div class="map-footer">
+          <div class="layer-switch" role="group" aria-label="Слой карты">
+            <button type="button" class="layer-button is-active" data-layer="flood" aria-pressed="true">Вода</button>
+            <button type="button" class="layer-button" data-layer="terrain" aria-pressed="false">Высота</button>
+            <button type="button" class="layer-button" data-layer="streets" aria-pressed="false">Улицы</button>
+            <button type="button" class="layer-button" data-layer="people" aria-pressed="false">Люди</button>
+          </div>
+          <span class="map-legend"><i class="legend-water"></i> зона риска <i class="legend-safe"></i> безопасно</span>
+        </div>
+        <div class="map-caption"><span>СЛОИ ДАННЫХ / <b data-layer-name>ЗАТОПЛЕНИЕ</b></span><span>МОДЕЛЬНАЯ ТЕРРИТОРИЯ · НЕ ПРОГНОЗ ДЛЯ РЕАЛЬНОГО ГОРОДА</span></div>
+      </div>
+
+      <aside class="control-column">
+        <div class="conditions-panel">
+          <div class="panel-heading"><div><p class="eyebrow">02 / ПОГОДА И ВОДА</p><h2>Условия</h2></div><button class="text-button" id="new-scenario" type="button"><span aria-hidden="true">↻</span> Новый сценарий</button></div>
+          <label class="range-control" for="rainfall">
+            <span class="range-title"><b>Ливень</b><output id="rain-value" for="rainfall">38 мм/ч</output></span>
+            <input id="rainfall" type="range" min="0" max="120" value="38" step="1">
+            <span class="range-ends"><span>морось</span><span>экстремальный</span></span>
+          </label>
+          <label class="range-control tide-range" for="tide">
+            <span class="range-title"><b>Уровень прилива</b><output id="tide-value" for="tide">+0,8 м</output></span>
+            <input id="tide" type="range" min="0" max="2.4" value="0.8" step="0.1">
+            <span class="range-ends"><span>обычный</span><span>штормовой нагон</span></span>
+          </label>
+          <div class="scenario-readout"><span class="readout-marker"></span><span id="scenario-copy">Сильный дождь совпадает с высоким приливом.</span></div>
+        </div>
+
+        <div class="defense-panel">
+          <div class="panel-heading"><div><p class="eyebrow">03 / ВМЕШАТЕЛЬСТВА</p><h2>Добавить защиту</h2></div><span class="count-badge"><b data-defense-count>0</b> / 12</span></div>
+          <div class="defense-options" role="group" aria-label="Выбор защитного сооружения">
+            <button class="defense-option is-selected" data-tool="pump" type="button" aria-pressed="true"><span class="defense-icon pump-icon" aria-hidden="true">↧</span><span><b>Насос</b><small>отводит воду</small></span><kbd>01</kbd></button>
+            <button class="defense-option" data-tool="garden" type="button" aria-pressed="false"><span class="defense-icon garden-icon" aria-hidden="true">✳</span><span><b>Дождевой сад</b><small>впитывает сток</small></span><kbd>02</kbd></button>
+            <button class="defense-option" data-tool="barrier" type="button" aria-pressed="false"><span class="defense-icon barrier-icon" aria-hidden="true">╱</span><span><b>Вал</b><small>перекрывает поток</small></span><kbd>03</kbd></button>
+          </div>
+          <p class="placement-tip" id="placement-tip">Нажмите на карту, чтобы разместить насос.</p>
+        </div>
+
+        <div class="run-panel">
+          <div class="run-top"><span class="eyebrow">04 / ПРОГОН МОДЕЛИ</span><span class="tick-readout">ШАГ <b data-tick>00</b><span> / 24</span></span></div>
+          <button class="run-button" id="run-simulation" type="button"><span class="run-glyph" aria-hidden="true">▶</span><span data-run-label>Запустить сценарий</span><span class="run-arrow" aria-hidden="true">↗</span></button>
+          <div class="run-progress" aria-hidden="true"><i data-progress></i></div>
+          <div class="run-actions"><button class="subtle-button" id="step-simulation" type="button">Один шаг <span>→</span></button><button class="subtle-button" id="reset-simulation" type="button">Сбросить</button></div>
+        </div>
+      </aside>
+    </section>
+
+    <section class="readout-section" aria-label="Результаты симуляции">
+      <div class="readout-heading"><div><p class="eyebrow">05 / СОСТОЯНИЕ ГОРОДА</p><h2>Цена сценария</h2></div><p>Показатели обновляются<br>с каждым шагом модели.</p></div>
+      <div class="metrics-grid">
+        <article class="metric-card metric-danger"><span>ЛЮДИ В ЗОНЕ РИСКА</span><b data-metric="people">0</b><small><i></i> жителей</small></article>
+        <article class="metric-card"><span>ЗДАНИЯ С ВОДОЙ</span><b data-metric="buildings">0</b><small>из <i data-total-buildings>0</i> объектов</small></article>
+        <article class="metric-card"><span>ЗАТОПЛЕННЫЕ УЛИЦЫ</span><b data-metric="roads">0%</b><small>протяжённости дорог</small></article>
+        <article class="metric-card metric-safe"><span>БЕЗОПАСНЫЕ МАРШРУТЫ</span><b data-metric="routes">0%</b><small>до ближайшего укрытия</small></article>
+      </div>
+      <article class="comparison-panel" aria-labelledby="comparison-title">
+        <div class="comparison-copy">
+          <p class="eyebrow">ПРОВЕРКА РЕШЕНИЯ</p>
+          <h3 id="comparison-title">Измерьте, что изменила защита.</h3>
+          <p>Сначала завершите исходный прогон и сохраните его. Затем сбросьте карту, разместите защиту и запустите второй прогон.</p>
+        </div>
+        <div class="comparison-actions">
+          <button class="subtle-button" id="save-baseline" type="button">Сохранить исходный прогон</button>
+          <button class="subtle-button" id="download-brief" type="button" disabled>Скачать сравнение</button>
+        </div>
+        <p class="comparison-status" id="comparison-status" aria-live="polite">Сравнение появится после двух прогонов.</p>
+      </article>
+      <div class="lower-grid">
+        <article class="chart-card"><div class="chart-heading"><div><p class="eyebrow">ЗА ПОСЛЕДНИЕ ШАГИ</p><h3>Глубина воды</h3></div><span class="chart-unit">СРЕДНЯЯ · СМ</span></div><canvas id="depth-chart" role="img" aria-label="График средней глубины воды по шагам симуляции"></canvas><div class="chart-axis"><span>начало</span><span>сейчас</span></div></article>
+        <article class="event-card"><div class="chart-heading"><div><p class="eyebrow">ПОЛЕВОЙ ЖУРНАЛ</p><h3>Что происходит</h3></div><span class="journal-dot" aria-hidden="true"></span></div><ol id="event-log" aria-live="polite"><li><time>00:00</time><span>Сценарий готов к запуску.</span></li></ol></article>
+      </div>
+    </section>
+
+    <section class="method-section"><div><p class="eyebrow">КАК РАБОТАЕТ МОДЕЛЬ</p><h2>Условия связаны.<br><em>Решения — тоже.</em></h2></div><p>Каждый шаг сопоставляет высоту участка, осадки, прилив и проницаемость почвы. Насосы откачивают воду, сады замедляют сток, а защитные валы меняют путь потока. Маршруты пересчитываются по состоянию улиц.</p><span class="method-index">WL / 01—05</span></section>
+  </main>
+
+  <footer class="footer"><a class="wordmark" href="#top"><span class="brand-glyph" aria-hidden="true">≈</span><span>waterline</span></a><span>ИНТЕРАКТИВНАЯ МОДЕЛЬ · ДЛЯ ИССЛЕДОВАНИЯ ПРИЧИН И ПОСЛЕДСТВИЙ</span><a href="#top">К НАЧАЛУ ↑</a></footer>
+  <dialog id="guide-dialog" class="guide-dialog"><button type="button" class="dialog-close" id="close-guide" aria-label="Закрыть">×</button><p class="eyebrow">КРАТКОЕ РУКОВОДСТВО</p><h2>Проверьте город на прочность.</h2><ol><li>Поднимите дождь и прилив, чтобы задать условия.</li><li>Выберите защиту и поставьте её на карте.</li><li>Запустите модель или продвигайте её по одному шагу.</li><li>Сравните риск для людей, зданий и дорог.</li></ol><p class="guide-footnote">Это учебная модель, а не система предупреждения или прогноз реального города.</p><button id="guide-done" class="run-button" type="button">Понятно <span aria-hidden="true">→</span></button></dialog>
+</body>
+</html>
