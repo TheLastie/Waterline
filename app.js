@@ -215,6 +215,7 @@
     $('#comparison-status').textContent = `${sameConditions ? 'Условия совпадают.' : 'Условия или территория отличаются — сравнивайте осторожно.'} ${lines.join(' ')}`;
     $('#download-brief').disabled = false;
   }
+  const DRAIN = .0045; // baseline storm-drain capacity per 15-minute step
   function simulateStep() {
     if (tick >= maxTicks) { stop(); return; }
     tick++;
@@ -225,7 +226,7 @@
     for (const c of world.flat()) {
       if (c.kind === 'water') { nextWater[c.y][c.x] = Math.max(previousWater[c.y][c.x], tide * .12 + .04); continue; }
       let amount = previousWater[c.y][c.x] + rain / 1000 * hours * (1 - c.permeability * .62);
-      if (c.kind === 'park') amount -= .012;
+      amount -= DRAIN * (c.kind === 'park' ? 1.4 : 1);
       for (const d of defenses) if (d.type === 'garden' && Math.abs(c.x - d.x) + Math.abs(c.y - d.y) <= 2) amount *= .72;
       for (const d of defenses) if (d.type === 'pump' && Math.abs(c.x - d.x) + Math.abs(c.y - d.y) <= 3) amount -= .045;
       const seaEdge = c.x >= cell.width * .75;
